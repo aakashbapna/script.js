@@ -101,6 +101,18 @@ script('../node_modules/domready/ready.js', function () {
           ok(ordera && orderb && orderc, 'done listen for readiness by id')
         })
       })
+      
+      test('Callbacks registered by multiple calls for same file, should fire when file is loaded',3, function(){
+		  script('../demos/js/boo', function(){
+			ok(true, 'callback 1 on boo.js load')
+		  });
+		  script('../demos/js/boo', function(){
+			ok(true, 'callback 2 on boo.js load')
+		  });
+		  script('../demos/js/boo', function(){
+			ok(true, 'callback 3 on boo.js load')
+		  });
+      })
 
     })
     start()

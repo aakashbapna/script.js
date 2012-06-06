@@ -49,13 +49,15 @@
     }
     setTimeout(function () {
       each(paths, function (path) {
+        path = (!validBase.test(path) && scriptpath) ? scriptpath + path + '.js' : path;
         if (scripts[path]) {
           id && (ids[id] = 1)
-          return scripts[path] == 2 && callback()
+          done && scripts[path] == 2 && $script.ready(id, done) // 1:not loaded, 2:loading, 3:loaded
+          return scripts[path] == 3 && callback()
         }
         scripts[path] = 1
         id && (ids[id] = 1)
-        create(!validBase.test(path) && scriptpath ? scriptpath + path + '.js' : path, callback)
+        create(path, callback)
       })
     }, 0)
     return $script
@@ -68,11 +70,12 @@
       if ((el[readyState] && !(/^c|loade/.test(el[readyState]))) || loaded) return;
       el.onload = el[onreadystatechange] = null
       loaded = 1
-      scripts[path] = 2
+      scripts[path] = 3
       fn()
     }
     el.async = 1
     el.src = path
+    scripts[path] = 2
     head.insertBefore(el, head.firstChild)
   }
 
